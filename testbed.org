@@ -1,0 +1,503 @@
+#+TITLE: Shi Shougang's Emacs configuration
+* Shi Shougang's Emacs configuration
+** Personal information
+#+begin_src emacs-lisp
+(setq user-full-name "Shi Shougang"
+      user-mail-address "shishougang@gmail.com")
+#+end_src
+
+** Load other parts of the Emacs Starter Kit
+
+#+begin_src emacs-lisp
+  (starter-kit-load "misc-recommended")
+  (starter-kit-load "starter-kit-python.org")
+  (starter-kit-load "starter-kit-org.org")
+  (starter-kit-load "starter-kit-eshell.org")
+  
+#+end_src
+
+For some reason, show-paren-mode misbehaves in my copy of emacs-starter-kit.
+#+begin_src emacs-lisp
+(show-paren-mode -1)
+#+end_src
+
+** Share my Emacs configuration
+This code gets around the fact that my config is called Sacha.org, but
+I want it to export as sacha-emacs.org in my Dropbox's public
+directory. I also use a dark background when editing, but the colours
+are better if I export assuming a light background.
+
+This code gets around the fact that my config is called Sacha.org, but
+I want it to export as sacha-emacs.org in my Dropbox's public
+directory. I also use a dark background when editing, but the colours
+are better if I export assuming a light background.
+
+/#+begin_src emacs-lisp
+  (defun sacha/org-share-emacs ()
+    "Share my Emacs configuration."
+    (interactive)
+    (let* ((destination-dir "~/Dropbox/Public/")
+           (destination-filename "sacha-emacs.org")
+           (current-theme `(color-theme-snapshot
+              ;; alist of frame parameters
+              ,(color-theme-get-params)
+              ;; alist of variables
+              ,(color-theme-get-vars)
+              ;; remaining elements of snapshot: face specs
+              ,@(color-theme-get-face-definitions))))
+      (save-restriction
+        (save-excursion
+          (widen)
+          (write-region (point-min) (point-max) (expand-file-name destination-filename destination-dir))
+          (with-current-buffer (find-file-noselect (expand-file-name
+                                                    destination-filename destination-dir))
+            (set-background-color "white")
+            (color-theme-vim-colors)
+            (org-babel-tangle-file buffer-file-name 
+                                   (expand-file-name
+                                    "sacha-emacs.el" destination-dir) "emacs-lisp")
+            (org-export-as-html nil)
+            (color-theme-install current-theme)
+            )))))
+/    #+end_src
+
+
+** Install packages if necessary
+ELPA makes it easy to install packages without tracking down all the
+different websites. Let's define a function that makes it easy to
+install packages.
+
+#+begin_src emacs-lisp
+(defun shi/package-install (package &optional repository)
+  "Install PACKAGE if it has not yet been installed.
+If REPOSITORY is specified, use that."
+  (unless (package-installed-p package)
+    (let ((package-archives (if repository
+                                (list (assoc repository package-archives))
+                              package-archives)))
+    (package-install package))))
+#+end_src
+
+
+** General configuration
+
+*** Enable minibuffer completion
+It can be difficult to remember the full names of Emacs commands, so I
+use =icomplete-mode= for minibuffer completion. This also makes it
+easier to discover commands.
+
+#+begin_src emacs-lisp
+(icomplete-mode 1)
+#+end_src
+
+*** Little editing shortcuts
+**** Navigation
+In my world, sentences end with a single space. This makes
+sentence navigation commands work for me.
+#+begin_src emacs-lisp
+(setq sentence-end-double-space nil)
+#+end_src
+
+**** When I press Enter
+I almost always want to go to the right indentation on the next line.
+#+begin_src emacs-lisp
+(global-set-key (kbd "RET") 'newline-and-indent)
+#+end_src
+
+**** Searching based on the current word
+This lets me search up and down.
+
+/#+begin_src emacs-lisp
+(defun shi/search-word-backward ()
+  "Find the previous occurrence of the current word."
+  (interactive)
+  (let ((cur (point)))
+    (skip-syntax-backward "w_")
+    (goto-char
+     (if (re-search-backward (concat "\\_<" (current-word) "\\_>") nil t)
+	 (match-beginning 0)
+       cur))))
+
+(defun shi/search-word-forward ()
+  "Find the next occurrence of the current word."
+  (interactive)
+  (let ((cur (point)))
+    (skip-syntax-forward "w_")
+    (goto-char
+     (if (re-search-forward (concat "\\_<" (current-word) "\\_>") nil t)
+	 (match-beginning 0)
+       cur))))
+(global-set-key '[M-up] shi/search-word-backward)
+(global-set-key '[M-down] shi/search-word-forward)
+(defadvice search-for-keyword (around shi activate)
+  "Match in a case-insensitive way."
+  (let ((case-fold-search t))
+    ad-do-it))
+/#+end_src
+
+**** Tramp and editing files over SSH
+Emacs lets you edit files on remote servers, which is pretty darn
+cool.
+
+#+begin_src emacs-lisp
+(setq tramp-default-method "ssh")
+#+end_src
+
+**** Ido-mode: Show recent files
+Ido-mode is awesome. Let's make it awesomer. I usually want to go to
+recently-opened files first.
+
+#+begin_src emacs-lisp
+  (ido-mode 1)
+  (setq ido-default-buffer-method 'selected-window)
+  (add-hook 'ido-make-file-list-hook 'ido-sort-mtime)
+  (add-hook 'ido-make-dir-list-hook 'ido-sort-mtime)
+  (defun ido-sort-mtime ()
+    (setq ido-temp-list
+          (sort ido-temp-list 
+                (lambda (a b)
+                  (let ((ta (nth 5 (file-attributes (concat ido-current-directory a))))
+                        (tb (nth 5 (file-attributes (concat ido-current-directory b)))))
+                    (if (= (nth 0 ta) (nth 0 tb))
+                        (> (nth 1 ta) (nth 1 tb))
+                      (> (nth 0 ta) (nth 0 tb)))))))
+    (ido-to-end  ;; move . files to end (again)
+     (delq nil (mapcar
+                (lambda (x) (if (string-equal (substring x 0 1) ".") x))
+                ido-temp-list))))
+
+#+end_src
+
+**** Minibuffer editing
+    Sometimes you want to be able to do fancy things with the text
+    that you're entering into the minibuffer. This binds =C-M-e= in a
+    minibuffer) so that you can edit the contents of the minibuffer
+    before submitting it
+
+#+begin_src emacs-lisp
+(if (require 'miniedit nil t)
+    (miniedit-install))
+#+end_src
+
+*** Change "yes or no" to "y or n"
+
+#+begin_src emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)   
+#+end_src
+
+*** Set up a white-on-black color scheme
+
+I like white on black because I find it to be more restful. The
+color-theme in ELPA is buggy, though, so we define some advice to make
+it work.
+
+/#+begin_src emacs-lisp
+  (defadvice color-theme-alist (around shi activate)
+    (if (ad-get-arg 0)
+        ad-do-it
+      nil))
+ ;; (shi/package-install 'color-theme)
+ ;; (require 'color-theme)
+ ;; (color-theme-hober)
+ ;; (require 'color-theme-darkmate)
+ ;; (color-theme-darkmate)
+
+
+/#+end_src
+
+Some things still aren't quite right, though.
+
+#+begin_src emacs-lisp
+  (set-face-foreground 'secondary-selection "darkblue")
+  (set-face-background 'secondary-selection "lightblue")
+#+end_src
+
+#+begin_src emacs-lisp
+  (defun frame-setting ()
+      (set-frame-font "文泉驿等宽微米黑 11")
+      (set-fontset-font "fontset-default"
+                        'gb18030 '("文泉驿等宽微米黑" . "unicode-bmp"))
+      (set-background-color "dark slate gray")
+      (set-foreground-color "blanched almond") )
+   
+  (if (and (fboundp 'daemonp) (daemonp))
+      (add-hook 'after-make-frame-functions
+                (lambda (frame)
+                  (with-selected-frame frame
+                    (frame-setting))))
+    (frame-setting))
+#+end_src
+
+/#+begin_src emacs-lisp
+(set-background-color "dark slate gray")
+(set-foreground-color "blanched almond")
+/#+end_src
+
+
+
+*** Frequently-accessed files
+Registers allow you to jump to a file or other location quickly. To
+jump to a register, use =C-x r j= followed by the letter of the
+register.
+
+/#+begin_src emacs-lisp :results silent
+  (dolist
+      (r `((?i (file . ,(expand-file-name (concat user-login-name ".org") starter-kit-dir)))
+           (?o (file . "~/personal/organizer.org"))
+           (?b (file . "~/personal/business.org"))
+           ))
+    (set-register (car r) (cadr r)))
+/#+end_src
+
+*** Kill-ring management
+
+#+begin_src emacs-lisp
+(shi/package-install 'browse-kill-ring)
+(when (require 'browse-kill-ring nil 'noerror)
+  (browse-kill-ring-default-keybindings))
+(setq browse-kill-ring-quit-action 'save-and-restore)
+#+end_src
+
+*** Key chords 
+I'm on a Dvorak keyboard, so these might not work for you.
+Experimenting with this!
+/#+begin_src emacs-lisp
+(require 'key-chord)
+(key-chord-mode 1)
+(key-chord-define-global "cg"     'undo)
+(key-chord-define-global "yp"     'other-window)
+#+end_src
+
+*** Quantified Emacs!
+
+#+begin_src emacs-lisp
+   (shi/package-install 'keyfreq)
+   (require 'keyfreq)
+   (keyfreq-mode 1)
+   (keyfreq-autosave-mode 1)
+#+end_src
+
+*** Better undo
+
+#+begin_src emacs-lisp
+(shi/package-install 'undo-tree)
+(require 'undo-tree)
+(global-undo-tree-mode)
+#+end_src
+
+*** Fix ido in Emacs Starter Kit
+
+For some reason, some things don't have modified times on Microsoft
+Windows.
+
+#+begin_src emacs-lisp
+(defun ido-sort-mtime ()
+  (setq ido-temp-list
+        (sort ido-temp-list 
+              (lambda (a b)
+                (let ((ta (nth 5 (file-attributes (concat ido-current-directory a))))
+                      (tb (nth 5 (file-attributes (concat ido-current-directory b)))))
+                  (if (= (or (nth 0 ta) 0) (or (nth 0 tb) 0))
+                      (> (or (nth 1 ta) 0) (or (nth 1 tb)))
+                    (> (or (nth 0 ta) 0) (or (nth 0 tb) 0)))))))
+  (ido-to-end  ;; move . files to end (again)
+   (delq nil (mapcar
+              (lambda (x) (if (string-equal (substring x 0 1) ".") x))
+              ido-temp-list))))
+#+end_src
+
+*** ibus for chinese input
+
+#+begin_src emacs-lisp
+(require 'ibus)
+;; Turn on ibus-mode automatically after loading .emacs
+(add-hook 'after-init-hook 'ibus-mode-on)
+ ;; Use C-SPC for Set Mark command
+ (ibus-define-common-key ?\C-\s nil)
+ ;; Use C-/ for Undo command
+ (ibus-define-common-key ?\C-/ nil)
+#+end_src
+
+
+** Program
+*** syntax highlighting for cmake
+#+begin_src emacs-lisp
+  (shi/package-install 'cmake-mode)
+  (require 'cmake-mode)
+(setq auto-mode-alist (append '(("CMakeLists\\.txt\\'" . cmake-mode)
+  ("\\.cmake\\'" . cmake-mode)) auto-mode-alist))
+#+end_src
+*** Configure cedet
+/#+begin_src emacs-lisp
+  ;;  (shi/package-install 'ecb)
+  (require 'ecb)
+(add-to-list 'load-path "path-of-cedet/common")
+(require 'cedet)
+(require 'semantic-ia)
+ 
+;; Enable EDE (Project Management) features
+(global-ede-mode 1)
+ 
+(semantic-load-enable-excessive-code-helpers)
+(semantic-load-enable-semantic-debugging-helpers)
+ 
+;; Enable SRecode (Template management) minor-mode.
+(global-srecode-minor-mode 1)
+/#+end_src
+#+begin_src emacs-lisp
+(require 'semantic-tag-folding nil 'noerror)
+(global-semantic-tag-folding-mode 1)
+(global-set-key [(f4)] 'speedbar-get-focus)
+
+#+end_src
+
+
+
+*** Install ecb
+#+begin_src emacs-lisp
+  ;;  (shi/package-install 'ecb)
+  (require 'ecb)
+#+end_src
+
+
+
+** Writing
+*** Avoiding weasel words
+    #+begin_src emacs-lisp
+            (if (require 'artbollocks-mode nil t)
+                (progn
+                  (setq weasel-words-regex
+                        (concat "\\b" (regexp-opt
+                                       '("one of the"
+                                         "should"
+                                         "just"
+                                         "sort of"
+                                         "a lot"
+                                         "probably"
+                                         "maybe"
+                                         "perhaps"
+                                         "I think"
+                                         "really"
+                                         "pretty"
+                                         "maybe"
+                                         "nice"
+                                         "action"
+                                         "utilize"
+                                         "leverage") t) "\\b"))
+                  ;; Fix a bug in the regular expression to catch repeated words
+                  (setq lexical-illusions-regex "\\b\\(\\w+\\)\\W+\\(\\1\\)\\b")
+                  ;; Don't show the art critic words, or at least until I figure
+                  ;; out my own jargon
+                  (setq artbollocks nil)
+                  (add-hook 'org-capture-mode-hook 'artbollocks-mode)
+      
+                  ))
+#+end_src
+
+*** Bloging with Octopress
+#+begin_src emacs-lisp
+(setq org-publish-project-alist
+'(("octopress" .  (:base-directory "~/Dropbox/Code/Web/octopress/source/org_posts/"
+                 :base-extension "org"
+                 :publishing-directory "~/Dropbox/Code/Web/octopress/source/_posts/"
+                 :sub-superscript ""
+                 :recursive t
+                 :publishing-function org-publish-org-to-html
+                 :headline-levels 4
+                 :html-extension "markdown"
+                 :body-only t))))
+#+end_src
+** Org
+
+I use [[http://www.orgmode.org][Org Mode]] to take notes, publish my blog, and do all sorts of
+stuff.
+
+*** Modules
+Org has a whole bunch of optional modules. These are the ones I'm
+currently experimenting with.
+#+begin_src emacs-lisp
+  (setq org-modules '(org-bbdb 
+                      org-gnus
+                      org-info
+                      org-jsinfo
+                      org-habit
+                      org-irc
+                      org-mouse
+                      org-annotate-file
+                      org-eval
+                      org-expiry
+                      org-interactive-query
+                      org-man
+                      org-panel
+                      org-screen
+                      org-toc))
+#+end_src
+
+I also like using =ido=-style completion.
+
+#+begin_src emacs-lisp
+(setq org-completion-use-ido t)
+#+end_src
+*** Keyboard shortcuts
+
+    #+begin_src emacs-lisp
+      (global-set-key (kbd "C-c r") 'org-capture)
+      (global-set-key (kbd "C-c a") 'org-agenda)
+      (global-set-key (kbd "C-c l") 'org-store-link)
+      (global-set-key (kbd "C-c L") 'org-insert-link-global)
+      (global-set-key (kbd "C-c O") 'org-open-at-point-global)
+      (require 'org)
+      (define-key org-mode-map (kbd "C-c v") 'org-show-todo-tree)
+      (define-key org-mode-map (kbd "C-c C-r") 'org-refile)
+      (define-key org-mode-map (kbd "C-c R") 'org-reveal)
+#+end_src
+
+=append-next-kill= is more useful to me than =org-table-copy-region=.
+
+#+begin_src emacs-lisp
+(define-key org-mode-map (kbd "C-M-w") 'append-next-kill)
+#+end_src
+
+I don't use the diary, but I do use the clock a lot.
+
+#+begin_src emacs-lisp
+  (require 'org-agenda)
+  (define-key org-agenda-mode-map "i" 'org-agenda-clock-in)
+#+end_src
+
+** Fun and games
+   
+*** Typing of Emacs
+    #+begin_src emacs-lisp
+      (setq toe-starting-length 5)
+      (setq toe-starting-time-per-word 10)
+      (setq toe-max-length 20)
+      
+      (setq toe-starting-length 6)
+      (setq toe-starting-time-per-word 2)
+      (setq toe-max-length 20)
+#+end_src
+*** Internet Relay Chat
+
+    IRC is a great way to hang out with other Emacs geeks.
+    #+begin_src emacs-lisp
+      (setq erc-autojoin-channels-alist '(("freenode.net"
+                                           "#org-mode"
+                                           "#emacs")))
+      (defun shi/erc ()
+        (interactive)
+        (erc :server "irc.freenode.net" :nick "shi" :password erc-password))
+    #+end_src
+
+
+
+** set color
+(set-background-color "dark slate gray")
+(set-foreground-color "blanched almond")
+(set-foreground-color "white")
+(set-background-color "black")
+
+/#+begin_src emacs-lisp
+(set-background-color "dark slate gray")
+(set-foreground-color "blanched almond")
+/#+end_src
