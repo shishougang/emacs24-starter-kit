@@ -395,7 +395,7 @@ Windows.
 #+end_src
 
 *** Bloging with Octopress
-#+begin_src emacs-lisp
+/#+begin_src emacs-lisp
 (setq org-publish-project-alist
 '(("octopress" .  (:base-directory "~/Dropbox/Code/Web/octopress/source/org_posts/"
                  :base-extension "org"
@@ -406,6 +406,10 @@ Windows.
                  :headline-levels 4
                  :html-extension "markdown"
                  :body-only t))))
+/#+end_src
+*** generate my personal wiki html
+#+begin_src emacs-lisp
+(load "/home/testbed/Dropbox/Blog/wiki/src/notes-init.el")
 #+end_src
 ** Org
 
