@@ -397,9 +397,9 @@ Windows.
 *** Bloging with Octopress
 /#+begin_src emacs-lisp
 (setq org-publish-project-alist
-'(("octopress" .  (:base-directory "~/Dropbox/Code/Web/octopress/source/org_posts/"
+'(("octopress" .  (:base-directory "~/Dropbox/Blog/octopress/source/org_posts/"
                  :base-extension "org"
-                 :publishing-directory "~/Dropbox/Code/Web/octopress/source/_posts/"
+                 :publishing-directory "~/Dropbox/Blog/octopress/source/_posts/"
                  :sub-superscript ""
                  :recursive t
                  :publishing-function org-publish-org-to-html
@@ -411,6 +411,13 @@ Windows.
 #+begin_src emacs-lisp
 (load "/home/testbed/Dropbox/Blog/wiki/src/notes-init.el")
 #+end_src
+*** markdown mode
+#+begin_src emacs-lisp
+(autoload 'markdown-mode "markdown-mode.el"
+   "Major mode for editing Markdown files" t)
+(setq auto-mode-alist
+   (cons '("\\.md" . markdown-mode) auto-mode-alist))
+#+end_src 
 ** Org
 
 I use [[http://www.orgmode.org][Org Mode]] to take notes, publish my blog, and do all sorts of
