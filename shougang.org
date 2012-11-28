@@ -234,7 +234,10 @@ Some things still aren't quite right, though.
 /#+end_src
 
 
-
+*** Toolbar 
+#+begin_src emacs-lisp
+(tool-bar-mode nil)
+#+end_src
 *** Frequently-accessed files
 Registers allow you to jump to a file or other location quickly. To
 jump to a register, use =C-x r j= followed by the letter of the
@@ -344,19 +347,19 @@ Windows.
 ;; Enable SRecode (Template management) minor-mode.
 (global-srecode-minor-mode 1)
 /#+end_src
-#+begin_src emacs-lisp
+/#+begin_src emacs-lisp
 (require 'semantic-tag-folding nil 'noerror)
 (global-semantic-tag-folding-mode 1)
 (global-set-key [(f4)] 'speedbar-get-focus)
 
-#+end_src
+/#+end_src
 
 
 *** Install ecb
-#+begin_src emacs-lisp
+/#+begin_src emacs-lisp
   ;;  (shi/package-install 'ecb)
   (require 'ecb)
-#+end_src
+/#+end_src
 
 
 
@@ -408,7 +411,7 @@ Windows.
 /#+end_src
 *** generate my personal wiki html
 #+begin_src emacs-lisp
-(load "/home/testbed/Dropbox/Blog/wiki/src/notes-init.el")
+(load "/home/shougang/Dropbox/Blog/wiki/src/notes-init.el")
 #+end_src
 *** markdown mode
 #+begin_src emacs-lisp

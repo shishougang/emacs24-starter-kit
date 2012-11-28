@@ -4,7 +4,7 @@
 ;;
 ;; This is the first thing to get loaded.
 ;;
-
+ 
 (require 'org)
 
 ;; remember this directory
@@ -16,18 +16,18 @@
 
 
 ;;add by user
-(add-to-list 'load-path "~/.emacs.d/src/cedet-1.1/common")
-(require 'cedet)
-(require 'semantic-ia)
+;;(add-to-list 'load-path "~/.emacs.d/src/cedet-1.1/common")
+;;(require 'cedet)
+;;(require 'semantic-ia)
 
 ;; Enable EDE (Project Management) features
-(global-ede-mode 1)
+;;(global-ede-mode 1)
  
-(semantic-load-enable-excessive-code-helpers)
-(semantic-load-enable-semantic-debugging-helpers)
+;;(semantic-load-enable-excessive-code-helpers)
+;;(semantic-load-enable-semantic-debugging-helpers)
  
 ;; Enable SRecode (Template management) minor-mode.
- (global-srecode-minor-mode 1)
+;; (global-srecode-minor-mode 1)
 ;;add by user
 
 
