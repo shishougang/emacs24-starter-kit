@@ -21,7 +21,7 @@ elim/*
 doc/*
 elpa/*
 ## src/*
-themes/*
+## themes/*
 url/*
 
 ## exported and encrypted files
@@ -52,3 +52,4 @@ secret.org
 .emacs.desktop*
 .*~
 agent/*
+/backups/
