@@ -235,9 +235,22 @@ Some things still aren't quite right, though.
 
 
 *** Toolbar 
-#+begin_src emacs-lisp
+/#+begin_src emacs-lisp
 (tool-bar-mode nil)
+(menu-bar-mode nil)
+/#+end_src
+
+*** parentheses 
+#+begin_src emacs-lisp
+(show-paren-mode t)
+(setq show-paren-style 'parentheses)
 #+end_src
+
+*** 显示列号
+/#+begin_src emacs-lisp
+(setq column-number-mode t)
+(setq line-number-mode t)
+/#+end_src
 *** Frequently-accessed files
 Registers allow you to jump to a file or other location quickly. To
 jump to a register, use =C-x r j= followed by the letter of the
@@ -322,6 +335,10 @@ Windows.
 #+end_src
 
 
+*** fcitx for chinese input
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-SPC") nil)
+#+end_src
 ** Program
 *** syntax highlighting for cmake
 #+begin_src emacs-lisp
