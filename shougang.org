@@ -324,7 +324,7 @@ Windows.
 
 *** ibus for chinese input
 
-#+begin_src emacs-lisp
+/#+begin_src emacs-lisp
 (require 'ibus)
 ;; Turn on ibus-mode automatically after loading .emacs
 (add-hook 'after-init-hook 'ibus-mode-on)
@@ -332,7 +332,7 @@ Windows.
  (ibus-define-common-key ?\C-\s nil)
  ;; Use C-/ for Undo command
  (ibus-define-common-key ?\C-/ nil)
-#+end_src
+/#+end_src
 
 
 *** fcitx for chinese input
