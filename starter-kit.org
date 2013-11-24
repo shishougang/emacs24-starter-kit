@@ -388,7 +388,7 @@ everyone using the starter kit.
                                     (expand-file-name "src"
                                                       starter-kit-dir)))
     (require 'yasnippet)
-    (yas-global-mode 1)
+    (yas/initialize)
   #+end_src
 
   load the snippets defined in the =./snippets/= directory
