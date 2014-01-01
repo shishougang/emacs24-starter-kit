@@ -370,7 +370,12 @@ Windows.
 (global-set-key [(f4)] 'speedbar-get-focus)
 
 /#+end_src
-
+*** c-mode use google-c-style
+#+begin_src emacs-lisp
+  (require 'google-c-style)
+  (add-hook 'c-mode-common-hook 'google-set-c-style)
+  (add-hook 'c-mode-common-hook 'google-make-newline-indent)
+#+end_src
 
 *** Install ecb
 /#+begin_src emacs-lisp
