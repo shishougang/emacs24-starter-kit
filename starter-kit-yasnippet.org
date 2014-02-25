@@ -29,7 +29,7 @@ Load the yasnippet bundle.
                                   (expand-file-name "src"
                                                     starter-kit-dir)))
   (require 'yasnippet)
-  (yas-global-mode 1)
+  (yas/global-mode 1)
 #+end_src
 
 Load the snippets defined in the =./snippets/= directory.

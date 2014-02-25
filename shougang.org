@@ -13,7 +13,7 @@
   (starter-kit-load "starter-kit-python.org")
   (starter-kit-load "starter-kit-org.org")
   (starter-kit-load "starter-kit-eshell.org")
-  
+  (starter-kit-load "starter-kit-yasnippet.org")
 #+end_src
 
 For some reason, show-paren-mode misbehaves in my copy of emacs-starter-kit.
@@ -375,6 +375,14 @@ Windows.
   (require 'google-c-style)
   (add-hook 'c-mode-common-hook 'google-set-c-style)
   (add-hook 'c-mode-common-hook 'google-make-newline-indent)
+#+end_src
+*** cpplint check
+#+begin_src emacs-lisp
+(defun cpplint ()
+ "check source code format according to Google Style Guide"
+  (interactive)
+  (compilation-start (concat "python ~/.emacs.d/cpplint.py " 
+     (buffer-file-name))))
 #+end_src
 
 *** Install ecb
