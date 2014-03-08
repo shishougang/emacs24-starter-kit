@@ -201,8 +201,6 @@ it work.
  ;; (color-theme-hober)
  ;; (require 'color-theme-darkmate)
  ;; (color-theme-darkmate)
-
-
 /#+end_src
 
 Some things still aren't quite right, though.
@@ -228,12 +226,16 @@ Some things still aren't quite right, though.
     (frame-setting))
 #+end_src
 
-/#+begin_src emacs-lisp
-(set-background-color "dark slate gray")
-(set-foreground-color "blanched almond")
-/#+end_src
-
-
+#+begin_src emacs-lisp
+  (eval-when-compile (require 'cl)) 
+  
+  (defun set-font (english chinese english-size chinese-size) 
+    (set-face-attribute 'default nil :font 
+                        (format "%s:pixelsize=%d" english english-size)) 
+    (dolist (charset '(kana han symbol cjk-misc bopomofo)) 
+      (set-fontset-font (frame-parameter nil 'font) charset 
+                        (font-spec :family chinese :size chinese-size)))) 
+#+end_src
 *** Toolbar 
 /#+begin_src emacs-lisp
 (tool-bar-mode nil)
@@ -333,7 +335,6 @@ Windows.
  ;; Use C-/ for Undo command
  (ibus-define-common-key ?\C-/ nil)
 /#+end_src
-
 
 *** fcitx for chinese input
 #+begin_src emacs-lisp
