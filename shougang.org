@@ -67,7 +67,7 @@ ELPA makes it easy to install packages without tracking down all the
 different websites. Let's define a function that makes it easy to
 install packages.
 
-#+begin_src emacs-lisp
+/#+begin_src emacs-lisp
 (defun shi/package-install (package &optional repository)
   "Install PACKAGE if it has not yet been installed.
 If REPOSITORY is specified, use that."
@@ -76,7 +76,7 @@ If REPOSITORY is specified, use that."
                                 (list (assoc repository package-archives))
                               package-archives)))
     (package-install package))))
-#+end_src
+/#+end_src
 
 
 ** General configuration
@@ -186,25 +186,6 @@ recently-opened files first.
 #+end_src
 
 *** Set up a white-on-black color scheme
-
-I like white on black because I find it to be more restful. The
-color-theme in ELPA is buggy, though, so we define some advice to make
-it work.
-
-/#+begin_src emacs-lisp
-  (defadvice color-theme-alist (around shi activate)
-    (if (ad-get-arg 0)
-        ad-do-it
-      nil))
- ;; (shi/package-install 'color-theme)
- ;; (require 'color-theme)
- ;; (color-theme-hober)
- ;; (require 'color-theme-darkmate)
- ;; (color-theme-darkmate)
-/#+end_src
-
-Some things still aren't quite right, though.
-
 #+begin_src emacs-lisp
   (set-face-foreground 'secondary-selection "darkblue")
   (set-face-background 'secondary-selection "lightblue")
@@ -270,7 +251,7 @@ register.
 *** Kill-ring management
 
 #+begin_src emacs-lisp
-(shi/package-install 'browse-kill-ring)
+(starter-kit-install-if-needed 'browse-kill-ring)
 (when (require 'browse-kill-ring nil 'noerror)
   (browse-kill-ring-default-keybindings))
 (setq browse-kill-ring-quit-action 'save-and-restore)
@@ -289,7 +270,7 @@ Experimenting with this!
 *** Quantified Emacs!
 
 #+begin_src emacs-lisp
-   (shi/package-install 'keyfreq)
+   (starter-kit-install-if-needed 'keyfreq)
    (require 'keyfreq)
    (keyfreq-mode 1)
    (keyfreq-autosave-mode 1)
@@ -298,7 +279,7 @@ Experimenting with this!
 *** Better undo
 
 #+begin_src emacs-lisp
-(shi/package-install 'undo-tree)
+(starter-kit-install-if-needed 'undo-tree)
 (require 'undo-tree)
 (global-undo-tree-mode)
 #+end_src
@@ -343,14 +324,14 @@ Windows.
 ** Program
 *** syntax highlighting for cmake
 #+begin_src emacs-lisp
-  (shi/package-install 'cmake-mode)
+  (starter-kit-install-if-needed 'cmake-mode)
   (require 'cmake-mode)
 (setq auto-mode-alist (append '(("CMakeLists\\.txt\\'" . cmake-mode)
   ("\\.cmake\\'" . cmake-mode)) auto-mode-alist))
 #+end_src
 *** Configure cedet
 /#+begin_src emacs-lisp
-  ;;  (shi/package-install 'ecb)
+  ;;  (starter-kit-install-if-needed 'ecb)
   (require 'ecb)
 (add-to-list 'load-path "path-of-cedet/common")
 (require 'cedet)
@@ -388,7 +369,7 @@ Windows.
 
 *** Install ecb
 /#+begin_src emacs-lisp
-  ;;  (shi/package-install 'ecb)
+  ;;  (shi/package-installstarter-kit-install-if-needed 'ecb)
   (require 'ecb)
 /#+end_src
 
@@ -432,11 +413,13 @@ Windows.
 (load "/home/shougang/Dropbox/Blog/wiki/src/notes-init.el")
 #+end_src
 *** markdown mode
+download from:http://jblevins.org/projects/markdown-mode/
 #+begin_src emacs-lisp
-(autoload 'markdown-mode "markdown-mode.el"
+(autoload 'markdown-mode "markdown-mode"
    "Major mode for editing Markdown files" t)
-(setq auto-mode-alist
-   (cons '("\\.md\\.markdown\\'" . markdown-mode) auto-mode-alist))
+(add-to-list 'auto-mode-alist '("\\.text\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md\\'" . markdown-mode))
 #+end_src 
 *** convert org to markdown mode
 /#+begin_src emacs-lisp
