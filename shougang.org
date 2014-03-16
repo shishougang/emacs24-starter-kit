@@ -334,6 +334,8 @@ Windows.
 *** fcitx for chinese input
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-SPC") nil)
+;; C-t 设置标记
+(global-set-key (kbd "C-t") 'set-mark-command)
 #+end_src
 *** Shortcut key
 #+begin_src emacs-lisp
@@ -538,6 +540,21 @@ I don't use the diary, but I do use the clock a lot.
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((latex . t)))
+#+end_src
+*** 中文中，转成HTML时，换行符成空格符号
+#+begin_src emacs-lisp
+(defadvice org-html-paragraph (before org-html-paragraph-advice
+                                      (paragraph contents info) activate)
+  "Join consecutive Chinese lines into a single long line without
+unwanted space when exporting org-mode to html."
+  (let* ((origin-contents (ad-get-arg 1))
+         (fix-regexp "[[:multibyte:]]")
+         (fixed-contents
+          (replace-regexp-in-string
+           (concat
+            "\\(" fix-regexp "\\) *\n *\\(" fix-regexp "\\)") "\\1\\2" origin-contents)))
+
+    (ad-set-arg 1 fixed-contents)))
 #+end_src
 ** Fun and games
 *** Typing of Emacs
