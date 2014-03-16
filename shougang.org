@@ -2,12 +2,11 @@
 * Shi Shougang's Emacs configuration
 ** Personal information
 #+begin_src emacs-lisp
-(setq user-full-name "Shi Shougang"
-      user-mail-address "shishougang@gmail.com")
+  (setq user-full-name "Shi Shougang"
+        user-mail-address "shishougang@gmail.com")
 #+end_src
 
 ** Load other parts of the Emacs Starter Kit
-
 #+begin_src emacs-lisp
   (starter-kit-load "misc-recommended")
   (starter-kit-load "starter-kit-python.org")
@@ -60,8 +59,6 @@ are better if I export assuming a light background.
             (color-theme-install current-theme)
             )))))
 /    #+end_src
-
-
 ** Install packages if necessary
 ELPA makes it easy to install packages without tracking down all the
 different websites. Let's define a function that makes it easy to
@@ -77,8 +74,6 @@ If REPOSITORY is specified, use that."
                               package-archives)))
     (package-install package))))
 /#+end_src
-
-
 ** General configuration
 
 *** Enable minibuffer completion
@@ -233,6 +228,25 @@ recently-opened files first.
 /#+begin_src emacs-lisp
 (setq column-number-mode t)
 (setq line-number-mode t)
+
+;;在buffer左侧显示行号
+  (dolist (hook (list
+                 'c-mode-hook
+                 'c++-mode-hook
+                 'emacs-lisp-mode-hook
+                 'lisp-interaction-mode-hook
+                 'lisp-mode-hook
+                 'emms-playlist-mode-hook
+                 'java-mode-hook
+                 'asm-mode-hook
+                 'haskell-mode-hook
+                 'rcirc-mode-hook
+                 'emms-lyrics-mode-hook
+                 'erc-mode-hook
+                 'sh-mode-hook
+                 'makefile-gmake-mode-hook
+                 ))
+    (add-hook hook (lambda () (linum-mode 1))))
 /#+end_src
 *** Frequently-accessed files
 Registers allow you to jump to a file or other location quickly. To
@@ -321,6 +335,24 @@ Windows.
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-SPC") nil)
 #+end_src
+*** Shortcut key
+#+begin_src emacs-lisp
+  (global-set-key [C-f8] 'previous-error)    ;;上一个错误
+  (global-set-key [f8] 'next-error)    ;;下一个错误
+      
+  ;;F9:格式化代码，以使代码缩进清晰，容易阅读
+  (global-set-key [f9] 'c-indent-line-or-region)
+  ;;F10:注释 / 取消注释
+  (global-set-key [f10] 'comment-or-uncomment-region)
+  
+  ;;Ctrl+F11:复制区域到寄存器
+  (global-set-key [C-f11] 'copy-to-register)
+  ;;F11:粘贴寄存器内容
+  (global-set-key [(f11)] 'insert-register)
+        
+  ;;跳转到某行
+  (global-set-key [(meta g)] 'goto-line)
+#+end_src
 ** Program
 *** syntax highlighting for cmake
 #+begin_src emacs-lisp
@@ -358,6 +390,18 @@ Windows.
   (add-hook 'c-mode-common-hook 'google-set-c-style)
   (add-hook 'c-mode-common-hook 'google-make-newline-indent)
 #+end_src
+*** Configure c-mode
+#+begin_src emacs-lisp
+  ;;set *.h and *.c , *cc, *.cpp files use c++ mode
+  (setq auto-mode-alist
+        (cons '("\\.h\\'" . c++-mode) auto-mode-alist))
+  (setq auto-mode-alist
+        (cons '("\\.c\\'" . c++-mode) auto-mode-alist))
+  (setq auto-mode-alist
+        (cons '("\\.cc\\'" . c++-mode) auto-mode-alist))
+  (setq auto-mode-alist
+        (cons '("\\.cpp\\'" . c++-mode) auto-mode-alist))
+#+end_src
 *** cpplint check
 #+begin_src emacs-lisp
 (defun cpplint ()
@@ -372,9 +416,6 @@ Windows.
   ;;  (shi/package-installstarter-kit-install-if-needed 'ecb)
   (require 'ecb)
 /#+end_src
-
-
-
 ** Writing
 *** Avoiding weasel words
     #+begin_src emacs-lisp
@@ -425,6 +466,10 @@ download from:http://jblevins.org/projects/markdown-mode/
 /#+begin_src emacs-lisp
 (load "org-export-generic.el")
 (load "markdown.el")   
+/#+end_src
+** Debug
+/#+begin_src emacs-lisp
+ (setq c-echo-syntactic-information-p t)
 /#+end_src
 ** Org
 
@@ -495,7 +540,6 @@ I don't use the diary, but I do use the clock a lot.
  '((latex . t)))
 #+end_src
 ** Fun and games
-   
 *** Typing of Emacs
     #+begin_src emacs-lisp
       (setq toe-starting-length 5)
@@ -517,8 +561,6 @@ I don't use the diary, but I do use the clock a lot.
         (interactive)
         (erc :server "irc.freenode.net" :nick "shi" :password erc-password))
     #+end_src
-
-
 
 ** set color
 (set-background-color "dark slate gray")
