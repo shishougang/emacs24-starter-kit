@@ -418,6 +418,20 @@ Windows.
   ;;  (shi/package-installstarter-kit-install-if-needed 'ecb)
   (require 'ecb)
 /#+end_src
+*** Using flycheck
+flycheck: https://github.com/flycheck/flycheck
+C-c ! n and C-c ! p to navigate between messages.
+#+begin_src emacs-lisp
+  (starter-kit-install-if-needed 'flycheck)
+  ;;(add-hook 'after-init-hook 'global-flycheck-mode)
+#+end_src
+*** using pyling with flycheck
+pylint install: sudo apt-get install pylint
+#+begin_src emacs-lisp
+  (defun flycheck-python-setup ()
+    (flycheck-mode))
+  (add-hook 'python-mode-hook #'flycheck-python-setup)
+#+end_src
 ** Writing
 *** Avoiding weasel words
     #+begin_src emacs-lisp
