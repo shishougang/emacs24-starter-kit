@@ -13,6 +13,7 @@
   (starter-kit-load "starter-kit-org.org")
   (starter-kit-load "starter-kit-eshell.org")
   (starter-kit-load "starter-kit-yasnippet.org")
+  (starter-kit-load "starter-kit-js.org")
 #+end_src
 
 For some reason, show-paren-mode misbehaves in my copy of emacs-starter-kit.
