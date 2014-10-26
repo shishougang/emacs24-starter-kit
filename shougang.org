@@ -322,7 +322,7 @@ Windows.
 
 *** ibus for chinese input
 
-/#+begin_src emacs-lisp
+#+begin_src emacs-lisp
 (require 'ibus)
 ;; Turn on ibus-mode automatically after loading .emacs
 (add-hook 'after-init-hook 'ibus-mode-on)
@@ -330,7 +330,7 @@ Windows.
  (ibus-define-common-key ?\C-\s nil)
  ;; Use C-/ for Undo command
  (ibus-define-common-key ?\C-/ nil)
-/#+end_src
+#+end_src
 
 *** fcitx for chinese input
 #+begin_src emacs-lisp
@@ -503,15 +503,7 @@ currently experimenting with.
                       org-jsinfo
                       org-habit
                       org-irc
-                      org-mouse
-                      org-annotate-file
-                      org-eval
-                      org-expiry
-                      org-interactive-query
-                      org-man
-                      org-panel
-                      org-screen
-                      org-toc))
+                      org-mouse))
 #+end_src
 
 I also like using =ido=-style completion.
