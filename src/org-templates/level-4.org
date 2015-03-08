@@ -1,4 +1,8 @@
-#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="../../../../assets/stylesheet.css" />
-#+OPTIONS: H:5  num:t toc:t \n:nil @:t ::t |:t ^:t -:t f:t *:t TeX:t LaTeX:nil skip:nil d:t tags:not-in-toc
 #+LINK_UP:  ../../../../index.html
 #+LINK_HOME: ../../../../index.html
+#+HTML_HEAD:   <link href="../../../../assets/bootstrap.min.css" rel="stylesheet" media="screen">
+#+HTML_HEAD:   <link href="../../../../assets/bootstrap-responsive.min.css" rel="stylesheet"> 
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="../../../../assets/stylesheet.css" />
+#+OPTIONS: H:5  num:t toc:t \n:nil @:t ::t |:t ^:t -:t f:t *:t TeX:t LaTeX:nil skip:nil d:t tags:not-in-toc
+#+HTML_HEAD: <script src="assets/js/bootstrap.min.js"></script>
+
