@@ -322,7 +322,7 @@ Windows.
 
 *** ibus for chinese input
 
-#+begin_src emacs-lisp
+/#+begin_src emacs-lisp
 (require 'ibus)
 ;; Turn on ibus-mode automatically after loading .emacs
 (add-hook 'after-init-hook 'ibus-mode-on)
@@ -330,7 +330,7 @@ Windows.
  (ibus-define-common-key ?\C-\s nil)
  ;; Use C-/ for Undo command
  (ibus-define-common-key ?\C-/ nil)
-#+end_src
+/#+end_src
 
 *** fcitx for chinese input
 #+begin_src emacs-lisp
@@ -355,6 +355,11 @@ Windows.
         
   ;;跳转到某行
   (global-set-key [(meta g)] 'goto-line)
+#+end_src
+*** set google-chrome to be the default browser
+#+begin_src emacs-lisp
+  (setq browse-url-browser-function 'browse-url-generic
+        browse-url-generic-program "google-chrome")
 #+end_src
 ** Program
 *** syntax highlighting for cmake
@@ -466,10 +471,6 @@ pylint install: sudo apt-get install pylint
                   ))
 #+end_src
 
-*** generate my personal wiki html
-#+begin_src emacs-lisp
-(load "/home/shougang/Dropbox/Blog/wiki/src/notes-init.el")
-#+end_src
 *** markdown mode
 download from:http://jblevins.org/projects/markdown-mode/
 #+begin_src emacs-lisp
@@ -497,13 +498,14 @@ stuff.
 Org has a whole bunch of optional modules. These are the ones I'm
 currently experimenting with.
 #+begin_src emacs-lisp
-  (setq org-modules '(org-bbdb 
-                      org-gnus
-                      org-info
-                      org-jsinfo
-                      org-habit
-                      org-irc
-                      org-mouse))
+    (setq org-modules '(org-bbdb 
+                        org-gnus
+                        org-info
+                        org-jsinfo
+                        org-habit
+                        org-irc
+                        org-mouse
+                        org-toc))
 #+end_src
 
 I also like using =ido=-style completion.
@@ -562,6 +564,12 @@ unwanted space when exporting org-mode to html."
             "\\(" fix-regexp "\\) *\n *\\(" fix-regexp "\\)") "\\1\\2" origin-contents)))
 
     (ad-set-arg 1 fixed-contents)))
+#+end_src
+*** generate my personal wiki html
+#+begin_src emacs-lisp
+(load "/home/shougang/Dropbox/Blog/wiki/src/notes-init.el")
+(load "/home/shougang/Dropbox/Blog/finance-wiki/src/fin-init.el")
+(setq org-startup-folded t)
 #+end_src
 ** Fun and games
 *** Typing of Emacs
