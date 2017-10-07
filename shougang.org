@@ -440,7 +440,7 @@ pylint install: sudo apt-get install pylint
 #+end_src
 ** Writing
 *** Avoiding weasel words
-    #+begin_src emacs-lisp
+#+begin_src emacs-lisp
             (if (require 'artbollocks-mode nil t)
                 (progn
                   (setq weasel-words-regex
@@ -514,7 +514,6 @@ I also like using =ido=-style completion.
 (setq org-completion-use-ido t)
 #+end_src
 *** Keyboard shortcuts
-
 #+begin_src emacs-lisp
       (global-set-key (kbd "C-c r") 'org-capture)
       (global-set-key (kbd "C-c a") 'org-agenda)
@@ -548,8 +547,28 @@ I don't use the diary, but I do use the clock a lot.
 #+begin_src emacs-lisp
 (org-babel-do-load-languages
  'org-babel-load-languages
- '((latex . t)))
+ '((latex . t)
+   (emacs-lisp . t)
+   (gnuplot . t)
+   (dot . t)))
 #+end_src
+/#+begin_src emacs-lisp
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((R . t)
+   (ditaa . t)
+   (dot . t)
+   (emacs-lisp . t)
+   (gnuplot . t)
+   (haskell . nil)
+   (ocaml . nil)
+   (python . t)
+   (ruby . t)
+   (screen . nil)
+   (sh . t)
+   (sql . nil)
+   (sqlite . t)))
+/#+end_src
 *** 中文中，转成HTML时，换行符成空格符号
 #+begin_src emacs-lisp
 (defadvice org-html-paragraph (before org-html-paragraph-advice
@@ -573,7 +592,7 @@ unwanted space when exporting org-mode to html."
 #+end_src
 ** Fun and games
 *** Typing of Emacs
-    #+begin_src emacs-lisp
+#+begin_src emacs-lisp
       (setq toe-starting-length 5)
       (setq toe-starting-time-per-word 10)
       (setq toe-max-length 20)
@@ -585,14 +604,14 @@ unwanted space when exporting org-mode to html."
 *** Internet Relay Chat
 
     IRC is a great way to hang out with other Emacs geeks.
-    #+begin_src emacs-lisp
-      (setq erc-autojoin-channels-alist '(("freenode.net"
-                                           "#org-mode"
-                                           "#emacs")))
-      (defun shi/erc ()
-        (interactive)
-        (erc :server "irc.freenode.net" :nick "shi" :password erc-password))
-    #+end_src
+#+begin_src emacs-lisp
+  (setq erc-autojoin-channels-alist '(("freenode.net"
+                                       "#org-mode"
+                                       "#emacs")))
+  (defun shi/erc ()
+    (interactive)
+    (erc :server "irc.freenode.net" :nick "shi" :password erc-password))
+#+end_src
 
 ** set color
 (set-background-color "dark slate gray")
